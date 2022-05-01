@@ -43,23 +43,26 @@ const Main = () => {
                 <SidebarContext.Provider value={{
                     notes: notes || [],
                     currentNoteId: handleCurrentNoteId,
+                    activeNoteId: activeId,
                 }}>
                     <Sidebar/>
                     <Layout>
                         {notes?.map(note => {
                            return(
-                               <WorkspaceContext.Provider value={{
-                                   delete: handleDeleteNote,
-                                   add: handleAddNote,
-                                   update: handleEditNote,
-                                   id: note?.id,
-                                   title: note?.title,
-                                   text: note?.text,
-                                   date: note?.date,
-                                   activeNoteId: activeId,
-                               }}>
-                                   <Workspace/>
-                               </WorkspaceContext.Provider>
+                               <div key={note.id}>
+                                   <WorkspaceContext.Provider value={{
+                                       delete: handleDeleteNote,
+                                       add: handleAddNote,
+                                       update: handleEditNote,
+                                       id: note?.id,
+                                       title: note?.title,
+                                       text: note?.text,
+                                       date: note?.date,
+                                       activeNoteId: activeId,
+                                   }}>
+                                       <Workspace/>
+                                   </WorkspaceContext.Provider>
+                               </div>
                            )
                         })}
                     </Layout>
