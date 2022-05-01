@@ -1,55 +1,70 @@
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../utils/db";
-import {Tabs} from "antd";
 import Workspace from "../Workspace/Workspace";
-import {createContext} from "react";
+import {createContext, useState} from "react";
 import createCurrentDateTime from "../../utils/currentDateTime";
+import Layout from "antd/es/layout/layout";
+import Sidebar from "../Sidebar/Sidebar";
 
-export const NotesContext = createContext({});
+export const WorkspaceContext = createContext({});
+export const SidebarContext = createContext({});
+
 
 const Main = () => {
-    const {TabPane} = Tabs;
+    const [activeId, setActiveId] = useState(20);
+    const handleCurrentNoteId = (id) => setActiveId(id);
 
     // Initial values of note initialization
     const title = "New Note";
     const text = "Write your note here...";
 
     // DB Requests
-    const notes = useLiveQuery(() => db.note.toArray());
-    const handleDeleteNote = (id) => {db.note.delete(id);}
+    const notes = useLiveQuery(async () => await db.note.toArray());
+    const handleDeleteNote = (id) => {
+        db.note.delete(id);
+    }
     const handleAddNote = () => db.note.add({
         title,
         text,
         date: createCurrentDateTime()
     });
-    const handleEditNote = (id, title, text, date) => {db.note.update(id, {
-        title,
-        text,
-        date,
-    })};
 
-    return(
+    const handleEditNote = (id, title, text, date) => {
+        db.note.update(id, {
+            title,
+            text,
+            date,
+        })
+    };
+
+    return (
         <>
-            <Tabs size={"large"} tabPosition={"left"}>
-                    {notes?.map((note) => {
-                        return(
-                            <TabPane tab={note?.title} key={note?.id}>
-                                <NotesContext.Provider value={{
-                                    id: note?.id,
-                                    title: note?.title,
-                                    text: note?.text,
-                                    date: note?.date,
-                                    delete: handleDeleteNote,
-                                    add: handleAddNote,
-                                    update: handleEditNote,
-                                }}>
-                                    <Workspace/>
-                                </NotesContext.Provider>
-
-                            </TabPane>
-                        )
-                    })}
-            </Tabs>
+            <Layout>
+                <SidebarContext.Provider value={{
+                    notes: notes || [],
+                    currentNoteId: handleCurrentNoteId,
+                }}>
+                    <Sidebar/>
+                    <Layout>
+                        {notes?.map(note => {
+                           return(
+                               <WorkspaceContext.Provider value={{
+                                   delete: handleDeleteNote,
+                                   add: handleAddNote,
+                                   update: handleEditNote,
+                                   id: note?.id,
+                                   title: note?.title,
+                                   text: note?.text,
+                                   date: note?.date,
+                                   activeNoteId: activeId,
+                               }}>
+                                   <Workspace/>
+                               </WorkspaceContext.Provider>
+                           )
+                        })}
+                    </Layout>
+                </SidebarContext.Provider>
+            </Layout>
         </>
     )
 }

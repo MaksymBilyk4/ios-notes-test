@@ -19,3 +19,6 @@ body{
     text-align: center;
     font-size: 30px;
 }
+.d-none{
+    display: none;
+}

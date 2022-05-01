@@ -1,0 +1,11 @@
+.tab{
+    background-color: grey;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+.tab:hover{
+    cursor: pointer;
+}
+.tab-active{
+    background-color: #f4f4f4;
+}

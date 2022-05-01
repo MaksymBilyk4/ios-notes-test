@@ -4,68 +4,73 @@ import SimpleMdeReact from "react-simplemde-editor";
 import {useContext, useState} from "react";
 import "easymde/dist/easymde.min.css";
 import "./workspace.css";
-import {NotesContext} from "../Main/Main";
+import {WorkspaceContext} from "../Main/Main";
 import createCurrentDateTime from "../../utils/currentDateTime";
 import Input from "antd/es/input/Input";
 
 const Workspace = () => {
-    const notesContext = useContext(NotesContext);
+    const workspaceContext = useContext(WorkspaceContext);
 
     const [edit, setEdit] = useState(false);
-    const [title, setTitle] = useState(notesContext.title);
-    const [text, setText] = useState(notesContext.text);
+    const [title, setTitle] = useState(workspaceContext.title);
+    const [text, setText] = useState(workspaceContext.text);
 
     const onEdit = () => setEdit(true);
+    const onEditCancel = () => setEdit(false);
+
     const onEditFetch = () => {
         setEdit(false);
-        notesContext.update(notesContext.id, title, text, createCurrentDateTime());
+        workspaceContext.update(workspaceContext.id, title, text, createCurrentDateTime());
     };
 
     const onEditChange = (value) => {
         setText(value);
     }
 
-    return(
-        <>
-            <div className="workspace__header">
-                <Button type={"primary"} ghost onClick={() => notesContext.add()}><FileAddOutlined />Add note</Button>
-                <Button type={"primary"} danger onClick={() => notesContext.delete(notesContext.id)}><DeleteOutlined />Delete note</Button>
-                <Button type={"primary"} disabled={edit} onClick={onEdit}><EditOutlined />Edit note</Button>
-            </div>
+    if (workspaceContext.id === workspaceContext.activeNoteId) {
+        return(
+            <>
+                <div className="workspace__header">
+                    <Button type={"primary"} ghost onClick={() => workspaceContext.add()}><FileAddOutlined />Add note</Button>
+                    <Button type={"primary"} danger onClick={() => workspaceContext.delete(workspaceContext.id)}><DeleteOutlined />Delete note</Button>
+                    <Button type={"primary"} disabled={edit} onClick={onEdit}><EditOutlined />Edit note</Button>
+                </div>
 
-            <p className={"note-date"}>{notesContext.date}</p>
-            {
-                !edit ?
-                    <div>
-                        <h1 className={"note-title"}>{title}</h1>
-                        <p>{text}</p>
-                    </div> : <div/>
-            }
+                <p className={"note-date"}>{workspaceContext.date}</p>
+                {
+                    !edit ?
+                        <div>
+                            <h1 className={"note-title"}>{title}</h1>
+                            <p>{text}</p>
+                        </div> : <div className={"d-none"}/>
+                }
 
-            {
-                edit ?
-                    <>
-                        <Form onFinish={onEditFetch}>
-                            <Form.Item>
-                                <Input
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    style={{width: "100%", textAlign: "center", fontSize: "24px", padding: "10px 0", marginBottom: "20px"}}
-                                    placeholder={"Enter note`s name"}
-                                />
-                            </Form.Item>
+                {
+                    edit ?
+                        <>
+                            <Form onFinish={onEditFetch}>
+                                <Form.Item>
+                                    <Input
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        style={{width: "100%", textAlign: "center", fontSize: "24px", padding: "10px 0", marginBottom: "20px"}}
+                                        placeholder={"Enter note`s name"}
+                                    />
+                                </Form.Item>
 
-                            <Form.Item>
-                                <SimpleMdeReact value={text} onChange={onEditChange} />
-                            </Form.Item>
-                            <Button type={"primary"} htmlType={"submit"}>Save</Button>
-                        </Form>
-                    </>
+                                <Form.Item>
+                                    <SimpleMdeReact value={text} onChange={onEditChange} />
+                                </Form.Item>
+                                <Button type={"primary"} htmlType={"submit"}>Save</Button>
+                                <Button type={"primary"} danger onClick={onEditCancel}>Cancel</Button>
+                            </Form>
+                        </>
 
-                    : <div/>
-            }
-        </>
-    )
+                        : <div className={"d-none"}/>
+                }
+            </>
+        )
+    }
 }
 
 export default Workspace;
