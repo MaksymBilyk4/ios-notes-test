@@ -2,13 +2,16 @@ import Sider from "antd/es/layout/Sider";
 import {useContext} from "react";
 import {SidebarContext} from "../Main/Main";
 import "./sidebar.css";
+import SearchBox from "../SearchBox/SearchBox";
 
 const Sidebar = () => {
+
     const contentContext = useContext(SidebarContext);
 
     return (
         <>
             <Sider theme={"light"}>
+                <SearchBox/>
                 {contentContext?.notes.map(note => {
                     return(
                         <div className={contentContext.activeNoteId === note.id ? "tab tab-active" : "tab"} key={`note${note.id}`} onClick={() => {contentContext?.currentNoteId(note.id)}}>
