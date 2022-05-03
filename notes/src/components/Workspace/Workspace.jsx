@@ -3,19 +3,20 @@ import {DeleteOutlined, EditOutlined, FileAddOutlined} from "@ant-design/icons";
 import {useContext, useState} from "react";
 import "easymde/dist/easymde.min.css";
 import "./workspace.css";
-import {WorkspaceContext} from "../Main/Main";
+import {ModalContext, WorkspaceContext} from "../Main/Main";
 import createCurrentDateTime from "../../utils/currentDateTime";
 import Input from "antd/es/input/Input";
 import SimpleMdeReact from "react-simplemde-editor";
 import ReactMarkdown from 'react-markdown'
+import {ModalDelete} from "../Modal/ModalDelete";
 
 const Workspace = () => {
     const workspaceContext = useContext(WorkspaceContext);
+    const modalContext = useContext(ModalContext);
 
     const [edit, setEdit] = useState(false);
     const [title, setTitle] = useState(workspaceContext.title || "");
     const [text, setText] = useState(workspaceContext.text || "");
-
 
     const onEdit = () => setEdit(true);
     const onEditCancel = () => setEdit(false);
@@ -25,20 +26,23 @@ const Workspace = () => {
         workspaceContext.update(workspaceContext.id, title, text, createCurrentDateTime());
     };
 
-    const onEditChange = (value) => {
-        console.log(value)
-        setText(value);
-    }
+    const onEditChange = (value) => setText(value);
 
     if (workspaceContext.id === workspaceContext.activeNoteId) {
         return (
             <>
+
+
                 <div className={"workspace__wrapper"}>
                     <div className="workspace__header">
                         <Button type={"primary"} ghost onClick={() => workspaceContext.add()}><FileAddOutlined/>Add note</Button>
-                        <Button type={"primary"} danger disabled={workspaceContext.notes.length === 1}
-                                onClick={() => workspaceContext.delete(workspaceContext.id)}><DeleteOutlined/>Delete
-                            note</Button>
+
+                            <Button type={"primary"} onClick={modalContext.openModal} danger disabled={workspaceContext.notes.length === 1}>
+                                <DeleteOutlined/>
+                                Delete Note
+                            </Button>
+
+                            <ModalDelete deletingId={workspaceContext.id}/>
                         <Button type={"primary"} disabled={edit} onClick={onEdit}><EditOutlined/>Edit note</Button>
                     </div>
 

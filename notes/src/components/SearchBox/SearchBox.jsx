@@ -4,20 +4,16 @@ import {SidebarContext} from "../Main/Main";
 
 const SearchBox = () => {
 
-    const sidebarContext = useContext(SidebarContext);
+    const {notes, filteredNotes} = useContext(SidebarContext);
     const [searchedNote, setSearchedNote] = useState("");
 
     useEffect(() => {
         const Debounce = setTimeout(() => {
-            if (!searchedNote) {
-                return sidebarContext?.notes;
-            }
-
-            const filNotes = sidebarContext?.notes.filter((note) => {
+            const filNotes = notes.filter((note) => {
                 return note.title.toLowerCase().includes(searchedNote.toLowerCase());
             });
 
-            sidebarContext?.filteredNotes(filNotes);
+            filteredNotes(filNotes);
         }, 100);
 
         return () => clearTimeout(Debounce);

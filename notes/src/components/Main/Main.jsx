@@ -9,8 +9,19 @@ import Sidebar from "../Sidebar/Sidebar";
 //Context
 export const WorkspaceContext = createContext({});
 export const SidebarContext = createContext({});
+export const ModalContext = createContext({});
 
 const Main = () => {
+    //modal
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    }
+
+    const openModal = () => {
+        setIsModalVisible(true);
+    }
 
     // Initial values of note initialization
     const title = "New Note";
@@ -21,6 +32,7 @@ const Main = () => {
 
     const handleDeleteNote = (id) => {
         db.note.delete(id);
+        setIsModalVisible(false);
     }
 
     const handleAddNote = () => {
@@ -30,6 +42,7 @@ const Main = () => {
             date: createCurrentDateTime()
         });
     }
+
 
     const handleEditNote = (id, title, text, date) => {
         db.note.update(id, {
@@ -64,7 +77,6 @@ const Main = () => {
                            return(
                                <div key={note.id}>
                                    <WorkspaceContext.Provider value={{
-                                       delete: handleDeleteNote,
                                        add: handleAddNote,
                                        update: handleEditNote,
                                        id: note?.id,
@@ -74,7 +86,14 @@ const Main = () => {
                                        activeNoteId: currentNoteId,
                                        notes: notes || [],
                                    }}>
-                                       <Workspace/>
+                                       <ModalContext.Provider value={{
+                                           modalVisibility: isModalVisible,
+                                           openModal: openModal,
+                                           handleCancel: handleCancel,
+                                           handleOk: handleDeleteNote,
+                                       }}>
+                                            <Workspace/>
+                                       </ModalContext.Provider>
                                    </WorkspaceContext.Provider>
                                </div>
                            )
