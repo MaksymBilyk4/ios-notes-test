@@ -11,8 +11,13 @@ export const SidebarContext = createContext({});
 
 
 const Main = () => {
-    const [activeId, setActiveId] = useState(20);
-    const handleCurrentNoteId = (id) => setActiveId(id);
+    const [prevNoteId, setPrevNoteId] = useState(0);
+    const [currentNoteId, setCurrentNoteId] = useState(1);
+
+    const handleCurrentNoteId = (id) => {
+        setPrevNoteId(currentNoteId);
+        setCurrentNoteId(id);
+    };
 
     // Initial values of note initialization
     const title = "New Note";
@@ -22,12 +27,15 @@ const Main = () => {
     const notes = useLiveQuery(async () => await db.note.toArray());
     const handleDeleteNote = (id) => {
         db.note.delete(id);
+        setCurrentNoteId(prevNoteId);
     }
-    const handleAddNote = () => db.note.add({
-        title,
-        text,
-        date: createCurrentDateTime()
-    });
+    const handleAddNote = () => {
+        db.note.add({
+            title,
+            text,
+            date: createCurrentDateTime()
+        });
+    }
 
     const handleEditNote = (id, title, text, date) => {
         db.note.update(id, {
@@ -43,7 +51,7 @@ const Main = () => {
                 <SidebarContext.Provider value={{
                     notes: notes || [],
                     currentNoteId: handleCurrentNoteId,
-                    activeNoteId: activeId,
+                    activeNoteId: currentNoteId,
                 }}>
                     <Sidebar/>
                     <Layout>
@@ -58,7 +66,8 @@ const Main = () => {
                                        title: note?.title,
                                        text: note?.text,
                                        date: note?.date,
-                                       activeNoteId: activeId,
+                                       activeNoteId: currentNoteId,
+                                       notes: notes || [],
                                    }}>
                                        <Workspace/>
                                    </WorkspaceContext.Provider>

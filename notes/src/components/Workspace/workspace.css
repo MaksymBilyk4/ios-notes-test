@@ -1,8 +1,13 @@
 body{
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
+.workspace__wrapper{
+    max-width: 90%;
+    margin: 0 auto;
+    height: 100vh;
+}
 .workspace__header{
-    background-color: #f4f4f4;
+    background-color: #f0f0f0;
     width: 100%;
     display: flex;
     margin: 0 auto;
@@ -18,7 +23,31 @@ body{
 .note-title{
     text-align: center;
     font-size: 30px;
+    font-weight: bold;
 }
 .d-none{
     display: none;
+}
+h1{
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #212529;
+}
+h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #212529;
+}
+h3{
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: #212529;
+}
+h4{
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #212529;
+}
+h5{
+
 }
