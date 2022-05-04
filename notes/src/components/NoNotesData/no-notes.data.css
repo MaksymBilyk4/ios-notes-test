@@ -1,0 +1,7 @@
+.no-data__container{
+    display: flex;
+    height: 90vh;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}

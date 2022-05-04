@@ -6,14 +6,6 @@ body{
     margin: 0 auto;
     height: 100vh;
 }
-.workspace__header{
-    background-color: #f0f0f0;
-    width: 100%;
-    display: flex;
-    margin: 0 auto;
-    padding: 20px;
-    justify-content: space-around;
-}
 .note-date{
     text-align: center;
     padding: 10px 0;

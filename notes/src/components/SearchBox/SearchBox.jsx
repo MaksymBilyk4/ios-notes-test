@@ -1,10 +1,10 @@
 import Search from "antd/es/input/Search";
 import {useContext, useEffect, useState} from "react";
-import {SidebarContext} from "../Main/Main";
+import {SidebarContext} from "../../context/Context";
 
 const SearchBox = () => {
 
-    const {notes, filteredNotes} = useContext(SidebarContext);
+    const {notes, filterNotes} = useContext(SidebarContext);
     const [searchedNote, setSearchedNote] = useState("");
 
     useEffect(() => {
@@ -13,15 +13,21 @@ const SearchBox = () => {
                 return note.title.toLowerCase().includes(searchedNote.toLowerCase());
             });
 
-            filteredNotes(filNotes);
+            if (searchedNote === "") {
+                filterNotes([]);
+            } else {
+                filterNotes(filNotes);
+            }
+
         }, 100);
 
         return () => clearTimeout(Debounce);
     }, [searchedNote])
 
-    return(
+    return (
         <>
-            <Search placeholder="input search text" onChange={(e) => setSearchedNote(e.target.value)} style={{ width: "100%" }} />
+            <Search placeholder="input search text" onChange={(e) => setSearchedNote(e.target.value)}
+                    style={{width: "100%"}}/>
         </>
     )
 }

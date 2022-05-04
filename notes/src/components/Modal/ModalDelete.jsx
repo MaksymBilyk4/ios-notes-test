@@ -1,13 +1,13 @@
 import {Alert, Modal} from "antd";
 import {useContext} from "react";
-import {ModalContext} from "../Main/Main";
+import {HeaderModalContext} from "../../context/Context";
 
 export const ModalDelete = ({deletingId}) => {
-    const modalContext = useContext(ModalContext);
+    const {modalVisibility, handleCancel, handleOk} = useContext(HeaderModalContext);
 
     return(
         <>
-            <Modal visible={modalContext.modalVisibility} onOk={() => modalContext.handleOk(deletingId)} onCancel={modalContext.handleCancel} title={"Are you sure you want to delete this note?"}>
+            <Modal visible={modalVisibility} onOk={() => handleOk(deletingId)} onCancel={handleCancel} title={"Are you sure you want to delete this note?"}>
                 <Alert
                     message="Warning"
                     description="You will never be able to restore it again."
